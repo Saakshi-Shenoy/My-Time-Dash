@@ -80,7 +80,6 @@ const Analysis = ({ selectedPeriod }) => {
 
   // Effect to update quarterly analysis based on daily activities
   useEffect(() => {
-    // Calculate total hours and idle time for the quarter
     const totalQuarterlyHours = dailyActivities.reduce((total, activity) => {
       return total + (parseFloat(activity.hours) || 0);
     }, 0) * daysInQuarter;
@@ -102,7 +101,6 @@ const Analysis = ({ selectedPeriod }) => {
   }, [dailyActivities, daysInQuarter, totalHoursInQuarter]);
 
   useEffect(() => {
-    // Calculate total hours and idle time for the year
     const totalYearlyHours = dailyActivities.reduce((total, activity) => {
       return total + (parseFloat(activity.hours) || 0);
     }, 0) * daysInYear;

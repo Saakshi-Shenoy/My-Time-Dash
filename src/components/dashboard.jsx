@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Analysis from "./analysis";
 
 function Dashboard() {
-  const [selectedPeriod, setSelectedPeriod] = useState(null);
+  const [selectedPeriod, setSelectedPeriod] = useState("daily");
 
   return (
     <div className="dashboard bg-white w-full h-95vh ml-2 p-4 rounded-lg">

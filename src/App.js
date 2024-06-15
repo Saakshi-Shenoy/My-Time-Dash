@@ -1,13 +1,20 @@
 import './App.css';
-import Sidebar from "../src/components/sidebar.jsx";
-import Dashboard from "../src/components/dashboard.jsx";
+import Sidebar from './components/sidebar.jsx';
+import Dashboard from './components/dashboard.jsx';
+import About from './components/about.jsx';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div className="flex ">
-      <Sidebar/>
-      <Dashboard />
-  </div>
+    <BrowserRouter>
+      <div className="flex">
+        <Sidebar />
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
