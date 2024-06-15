@@ -5,7 +5,9 @@ const Analysis = ({ selectedPeriod }) => {
   const totalHoursPerDay = 24;
   const daysInMonth = 30;
   const daysInQuarter = 90;
-  const totalHoursInQuarter = totalHoursPerDay * daysInQuarter; // 24 hours/day * 90 days
+  const daysInYear = 365;
+  const totalHoursInQuarter = totalHoursPerDay * daysInQuarter;
+  const totalHoursInYear = totalHoursPerDay * daysInYear; 
 
   // State for daily analysis
   const [dailyActivities, setDailyActivities] = useState([{ activity: "", hours: "" }]);
@@ -23,6 +25,11 @@ const Analysis = ({ selectedPeriod }) => {
   const [quarterlyTotalHours, setQuarterlyTotalHours] = useState(0);
   const [quarterlyIdleTime, setQuarterlyIdleTime] = useState(2160); // Initial idle time assumption for quarter
   const [isQuarterlyIdleTimeZero, setIsQuarterlyIdleTimeZero] = useState(false);
+
+  const [yearlyActivities, setYearlyActivities] = useState([]);
+  const [yearlyTotalHours, setYearlyTotalHours] = useState(0);
+  const [yearlyIdleTime, setYearlyIdleTime] = useState(8760); // Initial idle time assumption for year
+  const [isYearlyIdleTimeZero, setIsYearlyIdleTimeZero] = useState(false);
 
   // Function to handle change in daily activities
   const handleDailyChange = (index, event) => {
@@ -93,6 +100,28 @@ const Analysis = ({ selectedPeriod }) => {
     setQuarterlyIdleTime(calculatedIdleTime);
     setIsQuarterlyIdleTimeZero(calculatedIdleTime <= 0);
   }, [dailyActivities, daysInQuarter, totalHoursInQuarter]);
+
+  useEffect(() => {
+    // Calculate total hours and idle time for the year
+    const totalYearlyHours = dailyActivities.reduce((total, activity) => {
+      return total + (parseFloat(activity.hours) || 0);
+    }, 0) * daysInYear;
+
+    const yearlyActiveHours = totalYearlyHours;
+    const calculatedIdleTime = totalHoursInYear - yearlyActiveHours;
+
+    // Update yearly activities based on daily entries
+    const calculatedYearlyActivities = dailyActivities.map((activity) => ({
+      activity: activity.activity,
+      hours: (parseFloat(activity.hours) || 0) * daysInYear,
+    }));
+    setYearlyActivities(calculatedYearlyActivities);
+
+    // Update state for yearly analysis
+    setYearlyTotalHours(totalYearlyHours);
+    setYearlyIdleTime(calculatedIdleTime);
+    setIsYearlyIdleTimeZero(calculatedIdleTime <= 0);
+  }, [dailyActivities, daysInYear, totalHoursInYear]);
 
   switch (selectedPeriod) {
     case "daily":
@@ -180,13 +209,23 @@ const Analysis = ({ selectedPeriod }) => {
         </div>
       );
 
-    case "yearly":
-      return (
-        <div className="p-4 bg-white rounded-lg shadow-md w-full max-w-md mx-auto mt-6">
-          <h2 className="text-2xl font-bold mb-4">Yearly Activity Analysis</h2>
-          {/* Add your form fields and logic here */}
-        </div>
-      );
+      case "yearly":
+        const yearlyIdleTimeInDays = yearlyIdleTime / 24;
+        return (
+          <div className="anal-form p-4 bg-blue-100 rounded-lg shadow-md w-full max-w-md mx-auto mt-6">
+            <h2 className="text-2xl font-bold mb-4">Yearly Activity Analysis</h2>
+            {yearlyActivities.map((activity, index) => (
+              <div key={index} className="flex items-center mb-3 font-semibold">
+                <div className="w-1/2 p-2 border border-gray-400 rounded mr-2">{activity.activity}</div>
+                <div className="w-1/2 p-2 border border-gray-400 rounded mr-2">{activity.hours.toFixed(2)} hours</div>
+              </div>
+            ))}
+            <div className="mt-4">
+              <h3 className="text-xl font-bold">Total Hours: {yearlyTotalHours.toFixed(2)} hours</h3>
+              <h3 className="text-xl font-bold">Idle Time: {yearlyIdleTime.toFixed(2)} hours ({yearlyIdleTimeInDays.toFixed(2)} days)</h3>
+            </div>
+          </div>
+        );
 
     default:
       return null;
