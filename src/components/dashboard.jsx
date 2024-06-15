@@ -5,7 +5,7 @@ function Dashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState("daily");
 
   return (
-    <div className="dashboard bg-white w-full h-95vh ml-2 p-4 rounded-lg">
+    <div className="dashboard bg-gray-100 w-full h-95vh ml-2 p-4 rounded-lg">
       <div className="dash-content text-center">
         <h1
           className="text-2xl font-bold mb-4"
