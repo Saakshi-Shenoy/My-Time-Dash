@@ -4,6 +4,8 @@ import "../css/analysis.css";
 const Analysis = ({ selectedPeriod }) => {
   const totalHoursPerDay = 24;
   const daysInMonth = 30;
+  const daysInQuarter = 90;
+  const totalHoursInQuarter = totalHoursPerDay * daysInQuarter; // 24 hours/day * 90 days
 
   // State for daily analysis
   const [dailyActivities, setDailyActivities] = useState([{ activity: "", hours: "" }]);
@@ -15,6 +17,12 @@ const Analysis = ({ selectedPeriod }) => {
   const [monthlyTotalHours, setMonthlyTotalHours] = useState(0);
   const [monthlyIdleTime, setMonthlyIdleTime] = useState(720); // Initial idle time assumption
   const [isMonthlyIdleTimeZero, setIsMonthlyIdleTimeZero] = useState(false);
+
+  // State for quarterly analysis
+  const [quarterlyActivities, setQuarterlyActivities] = useState([]);
+  const [quarterlyTotalHours, setQuarterlyTotalHours] = useState(0);
+  const [quarterlyIdleTime, setQuarterlyIdleTime] = useState(2160); // Initial idle time assumption for quarter
+  const [isQuarterlyIdleTimeZero, setIsQuarterlyIdleTimeZero] = useState(false);
 
   // Function to handle change in daily activities
   const handleDailyChange = (index, event) => {
@@ -51,17 +59,40 @@ const Analysis = ({ selectedPeriod }) => {
     const calculatedIdleTime = 720 - monthlyActiveHours;
 
     // Update monthly activities based on daily entries
-    const calculatedActivities = dailyActivities.map((activity) => ({
+    const calculatedMonthlyActivities = dailyActivities.map((activity) => ({
       activity: activity.activity,
       hours: (parseFloat(activity.hours) || 0) * daysInMonth,
     }));
-    setMonthlyActivities(calculatedActivities);
+    setMonthlyActivities(calculatedMonthlyActivities);
 
     // Update state for monthly analysis
     setMonthlyTotalHours(totalMonthlyHours);
     setMonthlyIdleTime(calculatedIdleTime);
     setIsMonthlyIdleTimeZero(calculatedIdleTime <= 0);
   }, [dailyActivities, daysInMonth]);
+
+  // Effect to update quarterly analysis based on daily activities
+  useEffect(() => {
+    // Calculate total hours and idle time for the quarter
+    const totalQuarterlyHours = dailyActivities.reduce((total, activity) => {
+      return total + (parseFloat(activity.hours) || 0);
+    }, 0) * daysInQuarter;
+
+    const quarterlyActiveHours = totalQuarterlyHours;
+    const calculatedIdleTime = totalHoursInQuarter - quarterlyActiveHours;
+
+    // Update quarterly activities based on daily entries
+    const calculatedQuarterlyActivities = dailyActivities.map((activity) => ({
+      activity: activity.activity,
+      hours: (parseFloat(activity.hours) || 0) * daysInQuarter,
+    }));
+    setQuarterlyActivities(calculatedQuarterlyActivities);
+
+    // Update state for quarterly analysis
+    setQuarterlyTotalHours(totalQuarterlyHours);
+    setQuarterlyIdleTime(calculatedIdleTime);
+    setIsQuarterlyIdleTimeZero(calculatedIdleTime <= 0);
+  }, [dailyActivities, daysInQuarter, totalHoursInQuarter]);
 
   switch (selectedPeriod) {
     case "daily":
@@ -113,32 +144,42 @@ const Analysis = ({ selectedPeriod }) => {
         </div>
       );
 
-      case "monthly":
-        const idleTimeInDays = monthlyIdleTime / 24;
-      
-        return (
-          <div className="anal-form p-4 bg-blue-100 rounded-lg shadow-md w-full max-w-md mx-auto mt-6">
-            <h2 className="text-2xl font-bold mb-4">Monthly Activity Analysis</h2>
-            {monthlyActivities.map((activity, index) => (
-              <div key={index} className="flex items-center mb-3 font-semibold">
-                <div className="w-1/2 p-2 border border-gray-300 rounded mr-2">{activity.activity}</div>
-                <div className="w-1/2 p-2 border border-gray-300 rounded mr-2">{activity.hours.toFixed(2)} hours</div>
-              </div>
-            ))}
-            <div className="mt-4">
-              <h3 className="text-xl font-bold">Total Hours: {monthlyTotalHours.toFixed(2)} hours</h3>
-              <h3 className="text-xl font-bold">Idle Time: {monthlyIdleTime.toFixed(2)} hours = ( {idleTimeInDays.toFixed(2)} days! )</h3>
-            </div>
-          </div>
-        );
-
-      case "quarterly":
+    case "monthly":
+      const monthlyIdleTimeInDays = monthlyIdleTime / 24;
       return (
-        <div className="p-4 bg-white rounded-lg shadow-md w-full max-w-md mx-auto mt-6">
-          <h2 className="text-2xl font-bold mb-4">Quarterly Activity Analysis</h2>
-          {/* Add your form fields and logic here */}
+        <div className="anal-form p-4 bg-blue-100 rounded-lg shadow-md w-full max-w-md mx-auto mt-6">
+          <h2 className="text-2xl font-bold mb-4">Monthly Activity Analysis</h2>
+          {monthlyActivities.map((activity, index) => (
+            <div key={index} className="flex items-center mb-3 font-semibold">
+              <div className="w-1/2 p-2 border border-gray-400 rounded mr-2">{activity.activity}</div>
+              <div className="w-1/2 p-2 border border-gray-400 rounded mr-2">{activity.hours.toFixed(2)} hours</div>
+            </div>
+          ))}
+          <div className="mt-4">
+            <h3 className="text-xl font-bold">Total Hours: {monthlyTotalHours.toFixed(2)} hours</h3>
+            <h3 className="text-xl font-bold">Idle Time: {monthlyIdleTime.toFixed(2)} hours ({monthlyIdleTimeInDays.toFixed(2)} days)</h3>
+          </div>
         </div>
       );
+
+    case "quarterly":
+      const quarterlyIdleTimeInDays = quarterlyIdleTime / 24;
+      return (
+        <div className="anal-form p-4 bg-blue-100 rounded-lg shadow-md w-full max-w-md mx-auto mt-6">
+          <h2 className="text-2xl font-bold mb-4">Quarterly Activity Analysis</h2>
+          {quarterlyActivities.map((activity, index) => (
+            <div key={index} className="flex items-center mb-3 font-semibold">
+              <div className="w-1/2 p-2 border border-gray-400 rounded mr-2">{activity.activity}</div>
+              <div className="w-1/2 p-2 border border-gray-400 rounded mr-2">{activity.hours.toFixed(2)} hours</div>
+            </div>
+          ))}
+          <div className="mt-4">
+            <h3 className="text-xl font-bold">Total Hours: {quarterlyTotalHours.toFixed(2)} hours</h3>
+            <h3 className="text-xl font-bold">Idle Time: {quarterlyIdleTime.toFixed(2)} hours ({quarterlyIdleTimeInDays.toFixed(2)} days)</h3>
+          </div>
+        </div>
+      );
+
     case "yearly":
       return (
         <div className="p-4 bg-white rounded-lg shadow-md w-full max-w-md mx-auto mt-6">
@@ -146,6 +187,7 @@ const Analysis = ({ selectedPeriod }) => {
           {/* Add your form fields and logic here */}
         </div>
       );
+
     default:
       return null;
   }

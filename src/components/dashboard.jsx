@@ -11,7 +11,7 @@ function Dashboard() {
           className="text-2xl font-bold mb-4"
           style={{ fontSize: "30px", paddingBottom: "1%" }}
         >
-          Dashboard
+          My TimeDash
         </h1>
         <div className="flex justify-center items-center gap-4 text-2xl pb-5">
           <button
