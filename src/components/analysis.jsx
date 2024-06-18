@@ -125,7 +125,7 @@ const Analysis = ({ selectedPeriod }) => {
     case "daily":
       return (
         <div className="anal-form p-4 bg-blue-100 rounded-lg w-full max-w-md mx-auto mt-6 pt-2">
-          <h2 className="text-2xl font-bold mb-4">Daily Activity Analysis</h2>
+          <h2 className="text-2xl font-bold mb-4">Daily Activity General Analysis</h2>
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">Total Hours in a Day</label>
             <input
@@ -178,8 +178,10 @@ const Analysis = ({ selectedPeriod }) => {
           <h2 className="text-2xl font-bold mb-4">Monthly Activity Analysis</h2>
           {monthlyActivities.map((activity, index) => (
             <div key={index} className="flex items-center mb-3 font-semibold">
-              <div className="w-1/2 p-2 border border-gray-400 rounded mr-2">{activity.activity}</div>
-              <div className="w-1/2 p-2 border border-gray-400 rounded mr-2">{activity.hours.toFixed(2)} hours</div>
+              <div className="w-1/2 p-2 border border-gray-400 rounded mr-2 text-sm">{activity.activity}</div>
+              <div className="w-1/2 p-2 border border-gray-400 rounded mr-2 text-sm">
+                {activity.hours.toFixed(2)} hrs ({(activity.hours / 24).toFixed(2)} days)
+              </div>
             </div>
           ))}
           <div className="mt-4">
@@ -196,8 +198,10 @@ const Analysis = ({ selectedPeriod }) => {
           <h2 className="text-2xl font-bold mb-4">Quarterly Activity Analysis</h2>
           {quarterlyActivities.map((activity, index) => (
             <div key={index} className="flex items-center mb-3 font-semibold">
-              <div className="w-1/2 p-2 border border-gray-400 rounded mr-2">{activity.activity}</div>
-              <div className="w-1/2 p-2 border border-gray-400 rounded mr-2">{activity.hours.toFixed(2)} hours</div>
+              <div className="w-1/2 p-2 border border-gray-400 rounded mr-2 text-sm">{activity.activity}</div>
+              <div className="w-1/2 p-2 border border-gray-400 rounded mr-2 text-sm">
+                {activity.hours.toFixed(2)} hrs ({(activity.hours / 24).toFixed(2)} days)
+              </div>
             </div>
           ))}
           <div className="mt-4">
@@ -207,23 +211,25 @@ const Analysis = ({ selectedPeriod }) => {
         </div>
       );
 
-      case "yearly":
-        const yearlyIdleTimeInDays = yearlyIdleTime / 24;
-        return (
-          <div className="anal-form p-4 bg-blue-100 rounded-lg shadow-md w-full max-w-md mx-auto mt-6">
-            <h2 className="text-2xl font-bold mb-4">Yearly Activity Analysis</h2>
-            {yearlyActivities.map((activity, index) => (
-              <div key={index} className="flex items-center mb-3 font-semibold">
-                <div className="w-1/2 p-2 border border-gray-400 rounded mr-2">{activity.activity}</div>
-                <div className="w-1/2 p-2 border border-gray-400 rounded mr-2">{activity.hours.toFixed(2)} hours</div>
+    case "yearly":
+      const yearlyIdleTimeInDays = yearlyIdleTime / 24;
+      return (
+        <div className="anal-form p-4 bg-blue-100 rounded-lg shadow-md w-full max-w-md mx-auto mt-6">
+          <h2 className="text-2xl font-bold mb-4">Yearly Activity Analysis</h2>
+          {yearlyActivities.map((activity, index) => (
+            <div key={index} className="flex items-center mb-3 font-semibold">
+              <div className="w-1/2 p-2 border border-gray-400 rounded mr-2 text-sm">{activity.activity}</div>
+              <div className="w-1/2 p-2 border border-gray-400 rounded mr-2 text-sm">
+                {activity.hours.toFixed(2)} hrs ({(activity.hours / 24).toFixed(2)} days)
               </div>
-            ))}
-            <div className="mt-4">
-              <h3 className="text-xl font-bold">Total Hours: {yearlyTotalHours.toFixed(2)} hours</h3>
-              <h3 className="text-xl font-bold">Idle Time: {yearlyIdleTime.toFixed(2)} hours ({yearlyIdleTimeInDays.toFixed(2)} days)</h3>
             </div>
+          ))}
+          <div className="mt-4">
+            <h3 className="text-xl font-bold">Total Hours: {yearlyTotalHours.toFixed(2)} hours</h3>
+            <h3 className="text-xl font-bold">Idle Time: {yearlyIdleTime.toFixed(2)} hours ({yearlyIdleTimeInDays.toFixed(2)} days)</h3>
           </div>
-        );
+        </div>
+      );
 
     default:
       return null;
