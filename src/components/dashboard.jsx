@@ -53,7 +53,7 @@
 
 import React, { useState, useEffect } from "react";
 import Analysis from "./analysis";
-import DailyPieChart from "./graph"; 
+import DailyPieChart from "./graph";
 
 function Dashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState("daily");
@@ -91,9 +91,9 @@ function Dashboard() {
 
     // Synchronize other periods based on daily activities
     const calculatePeriodActivities = (multiplier) => {
-      return dailyActivities.map(activity => ({
+      return dailyActivities.map((activity) => ({
         ...activity,
-        hours: (parseFloat(activity.hours) * multiplier).toFixed(2)
+        hours: (parseFloat(activity.hours) * multiplier).toFixed(2),
       }));
     };
 
@@ -123,7 +123,9 @@ function Dashboard() {
         <div className="flex justify-center items-center gap-4 text-2xl pb-5">
           <button
             className={`${
-              selectedPeriod === "daily" ? "bg-blue-600" : "bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br"
+              selectedPeriod === "daily"
+                ? "bg-blue-600"
+                : "bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br"
             } text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg px-5 py-2.5 text-center mr-2 mb-2`}
             onClick={() => handlePeriodChange("daily")}
             type="button"
@@ -132,7 +134,9 @@ function Dashboard() {
           </button>
           <button
             className={`${
-              selectedPeriod === "monthly" ? "bg-blue-600" : "bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br"
+              selectedPeriod === "monthly"
+                ? "bg-blue-600"
+                : "bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br"
             } text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg px-5 py-2.5 text-center mr-2 mb-2`}
             onClick={() => handlePeriodChange("monthly")}
             type="button"
@@ -141,7 +145,9 @@ function Dashboard() {
           </button>
           <button
             className={`${
-              selectedPeriod === "quarterly" ? "bg-blue-600" : "bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br"
+              selectedPeriod === "quarterly"
+                ? "bg-blue-600"
+                : "bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br"
             } text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg px-5 py-2.5 text-center mr-2 mb-2`}
             onClick={() => handlePeriodChange("quarterly")}
             type="button"
@@ -150,7 +156,9 @@ function Dashboard() {
           </button>
           <button
             className={`${
-              selectedPeriod === "yearly" ? "bg-blue-600" : "bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br"
+              selectedPeriod === "yearly"
+                ? "bg-blue-600"
+                : "bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br"
             } text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg px-5 py-2.5 text-center mr-2 mb-2`}
             onClick={() => handlePeriodChange("yearly")}
             type="button"
@@ -159,7 +167,24 @@ function Dashboard() {
           </button>
         </div>
 
+        {/* Button to toggle visual analysis section */}
         {selectedPeriod === "daily" && (
+          <div className="flex justify-center gap-4 mt-6">
+            <button
+              className={`${
+                showVisualAnalysis
+                  ? "bg-red-600 hover:bg-red-800"
+                  : "bg-green-600 hover:bg-green-800"
+              } text-white font-bold py-2 px-4 rounded-lg`}
+              onClick={toggleVisualAnalysis}
+            >
+              {showVisualAnalysis ? "Hide Visual Analysis" : "Analyse Visually"}
+            </button>
+          </div>
+        )}
+
+        {/* Render visual analysis section if showVisualAnalysis is true */}
+        {selectedPeriod === "daily" && showVisualAnalysis && (
           <div className="flex justify-center gap-4 mt-6">
             <div className="anal-form p-4 bg-blue-100 rounded-lg w-full max-w-md">
               <h2 className="text-2xl font-bold mb-4">Daily Activity Visual Analysis</h2>
@@ -218,6 +243,7 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
 
 
 
